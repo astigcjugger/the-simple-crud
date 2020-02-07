@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'simplecrudui';
+  title = 'Simple CRUD: Customers';
+  //homeMessage = 'Welcome to Simple CRUD';
 }
