@@ -1,13 +1,13 @@
-package com.fullstack.backend.api;
+package com.simplecrud.backend.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SimplecrudrestApplication {
+public class SimpleCRUDdRestApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SimplecrudrestApplication.class, args);
+		SpringApplication.run(SimpleCRUDdRestApplication.class, args);
 	}
 
 }
