@@ -18,19 +18,19 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "address1", nullable = false)
+    @Column(name = "address1", nullable = true)
     private String address1;
 
     @Column(name = "address2", nullable = true)
     private String address2;
     
-    @Column(name = "city", nullable = false)
+    @Column(name = "city", nullable = true)
     private String city;
     
-    @Column(name = "state", nullable = false)
+    @Column(name = "state", nullable = true)
     private String state;
  
-    @Column(name = "zipcode", nullable = false)
+    @Column(name = "zipcode", nullable = true)
     private String zipCode;
     
     @OneToOne(fetch = FetchType.LAZY, optional = true)
@@ -99,6 +99,22 @@ public class Address {
 
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
+	}
+
+	public Customer getCustomerAddress() {
+		return customerAddress;
+	}
+
+	public void setCustomerAddress(Customer customerAddress) {
+		this.customerAddress = customerAddress;
+	}
+
+	public Office getOfficeAddress() {
+		return officeAddress;
+	}
+
+	public void setOfficeAddress(Office officeAddress) {
+		this.officeAddress = officeAddress;
 	}
 
 	@Override

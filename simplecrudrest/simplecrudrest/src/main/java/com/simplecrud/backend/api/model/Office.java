@@ -37,7 +37,8 @@ public class Office {
     		cascade = CascadeType.ALL)
     private Address address;
     
-    @ManyToMany(mappedBy = "offices", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "offices", fetch = FetchType.LAZY,
+    		cascade = CascadeType.ALL)
     private List<Customer> customers;
 
     public Office() {
@@ -91,6 +92,22 @@ public class Office {
 
 	public void setSupportPhone(String supportPhone) {
 		this.supportPhone = supportPhone;
+	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
+	public List<Customer> getCustomers() {
+		return customers;
+	}
+
+	public void setCustomers(List<Customer> customers) {
+		this.customers = customers;
 	}
 
 	@Override

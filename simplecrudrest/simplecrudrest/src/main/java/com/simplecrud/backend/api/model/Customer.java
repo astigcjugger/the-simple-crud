@@ -42,7 +42,7 @@ public class Customer {
     		cascade = CascadeType.ALL)
     private Address address;  
     
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "customers_offices", 
     		joinColumns = {
     				@JoinColumn(name = "customer_id", referencedColumnName = "id",
@@ -113,6 +113,22 @@ public class Customer {
 
 	public void setMobilePhone(String mobilePhone) {
 		this.mobilePhone = mobilePhone;
+	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
+	public List<Office> getOffices() {
+		return offices;
+	}
+
+	public void setOffices(List<Office> offices) {
+		this.offices = offices;
 	}
 
 	@Override
