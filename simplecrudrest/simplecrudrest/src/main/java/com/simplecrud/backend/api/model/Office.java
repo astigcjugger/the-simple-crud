@@ -1,6 +1,12 @@
 package com.simplecrud.backend.api.model;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,16 +15,21 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.MapKey;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "Offices")
-public class Office {
+public class Office implements Serializable {
 
+	private static final long serialVersionUID = -8690693372846798580L;
+	
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
     
     @Column(name = "officename", nullable = false)
@@ -33,17 +44,26 @@ public class Office {
     @Column(name = "supportphone", nullable = true)
     private String supportPhone;
     
-    @OneToOne(mappedBy = "officeAddress", fetch = FetchType.LAZY,
-    		cascade = CascadeType.ALL)
-    private Address address;
+    @OneToOne(mappedBy = "office")
+//    @OneToOne
+//    @JoinColumn(name = "ADDRESS_ID")
+    private Address officeAddress;
     
-    @ManyToMany(mappedBy = "offices", fetch = FetchType.LAZY,
-    		cascade = CascadeType.ALL)
-    private List<Customer> customers;
+//    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "offices")
+//    private Set<Customer> customers = new HashSet<Customer>();
+    @ManyToMany(mappedBy = "offices", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    private Set<Customer> customers= new HashSet<Customer>();
 
     public Office() {
     	
     }
+    
+    public Office(Office newOffice) {
+		this.officeName = newOffice.getOfficeName();
+		this.mainContact = newOffice.getMainContact();
+		this.mainPhone = newOffice.getMainPhone();
+		this.supportPhone = newOffice.getSupportPhone();
+    }    
     
 	public Office(String officeName, String mainContact, String mainPhone, String supportPhone) {
 		this.officeName = officeName;
@@ -52,11 +72,9 @@ public class Office {
 		this.supportPhone = supportPhone;
 	}
 
-
 	public Long getId() {
 		return id;
 	}
-
 	
 	public void setId(Long id) {
 		this.id = id;
@@ -94,21 +112,52 @@ public class Office {
 		this.supportPhone = supportPhone;
 	}
 
-	public Address getAddress() {
-		return address;
+	public Address getOfficeAddress() {
+		return officeAddress;
 	}
 
-	public void setAddress(Address address) {
-		this.address = address;
+//	public void setOfficeAddress(Address address) {
+//		this.officeAddress = address;
+//	}
+
+	public void setOfficeAddress(Address address) {
+		//this.address = officeAddress;
+		if (sameAsBefore(address))
+			return;
+		
+		Address oldAddress = this.officeAddress;
+		this.officeAddress = address;
+		if (oldAddress != null)
+			oldAddress.setOffice(null);
+		
+		if (address != null)
+			address.setOffice(this);
 	}
 
-	public List<Customer> getCustomers() {
-		return customers;
+	public boolean sameAsBefore(Address newAddress) {
+		
+		return officeAddress == null ? newAddress == null : officeAddress.equals(newAddress);
+	}	
+	
+	public Set<Customer> getCustomers() {
+		return new HashSet<Customer>(customers);
 	}
 
-	public void setCustomers(List<Customer> customers) {
-		this.customers = customers;
+	public void addCustomer(Customer customer) {
+		if (customers.contains(customer))
+			return;
+		
+		customers.add(customer);
+		customer.getOffices().add(this);
 	}
+	
+	public void removeCustomer(Customer customer) {
+		if (!customers.contains(customer))
+			return;
+		
+		customers.remove(customer);
+		customer.getOffices().remove(this);		
+	}	
 
 	@Override
 	public String toString() {

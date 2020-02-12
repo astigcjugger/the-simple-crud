@@ -1,5 +1,7 @@
 package com.simplecrud.backend.api.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,10 +14,13 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Addresses")
-public class Address {
+public class Address implements Serializable {
 
+	private static final long serialVersionUID = -4238693372846798580L;
+	
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
     
     @Column(name = "address1", nullable = true)
@@ -34,15 +39,25 @@ public class Address {
     private String zipCode;
     
     @OneToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "customer_address_id", nullable = true)
-    private Customer customerAddress;
+    @JoinColumn(name = "customeraddress_id", nullable = true)
+//    @OneToOne(mappedBy = "customerAddress")
+    private Customer customer;
     
     @OneToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "office_address_id", nullable = true)
-    private Office officeAddress;
+    @JoinColumn(name = "officeaddress_id", nullable = true)
+//    @OneToOne(mappedBy = "officeAddress")
+    private Office office;
     
     public Address() {
     	
+    }
+    
+    public Address(Address newAddress) {
+		this.address1 = newAddress.getAddress1();
+		this.address2 = newAddress.getAddress2();
+		this.city = newAddress.getCity();
+		this.state = newAddress.getState();
+		this.zipCode = newAddress.getZipCode();
     }
     
 	public Address(String address1, String address2, String city, String state, String zipCode) {
@@ -101,21 +116,63 @@ public class Address {
 		this.zipCode = zipCode;
 	}
 
-	public Customer getCustomerAddress() {
-		return customerAddress;
+	public Customer getCustomer() {
+		return customer;
+	}
+	
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
-	public void setCustomerAddress(Customer customerAddress) {
-		this.customerAddress = customerAddress;
+//	public void setCustomer(Customer customerAddress) {
+//		//this.customerAddress = customer;
+//		if (sameCustomerBefore(customerAddress))
+//			return;
+//		
+//		Customer oldCustomer = this.customer;
+//		this.customer = customerAddress;
+//		if (oldCustomer != null) 
+//			oldCustomer.setAddress(null);
+//		
+//		if (customerAddress != null)
+//			customerAddress.setAddress(this);
+//	}
+//	
+//	private boolean sameCustomerBefore(Customer newCustomer) {
+//		if (customer == null) 
+//			return newCustomer == null;
+//		
+//		return customer.equals(newCustomer);
+//	}
+
+	public Office getOffice() {
+		return office;
+	}
+	
+	public void setOffice(Office office) {
+		this.office = office;
 	}
 
-	public Office getOfficeAddress() {
-		return officeAddress;
-	}
-
-	public void setOfficeAddress(Office officeAddress) {
-		this.officeAddress = officeAddress;
-	}
+//	public void setOffice(Office officeAddress) {
+//		//this.officeAddress = office;
+//		if (sameOfficeBefore(officeAddress))
+//			return;
+//		
+//		Office oldOffice = this.office;
+//		this.office = officeAddress;
+//		if (oldOffice != null) 
+//			oldOffice.setOfficeAddress(null);
+//		
+//		if (officeAddress != null)
+//			officeAddress.setOfficeAddress(this);
+//	}
+//
+//	private boolean sameOfficeBefore(Office newOffice) {
+//		if (office == null) 
+//			return newOffice == null;
+//		
+//		return office.equals(newOffice);
+//	}
 
 	@Override
 	public String toString() {

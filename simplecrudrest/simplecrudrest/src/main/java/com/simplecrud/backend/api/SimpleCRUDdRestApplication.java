@@ -31,51 +31,72 @@ public class SimpleCRUDdRestApplication {
 		
 		return args -> {
 			
-			// Associate all Offices to Addresses
-			for (int i = 10000; i < 10005; i++) {
-				
-				Long officeid = new Long(i);
-				Office office = officeRepository.findById(officeid)
-						.orElseThrow(
-						() -> new ResourceNotFoundException("Office not found for this id : " 
-						+ officeid));
-				
-				Address address = addressRepository.findById(officeid)
-						.orElseThrow(
-						() -> new ResourceNotFoundException("Office not found for this id : " 
-						+ officeid));
-						
-				office.setAddress(address);
-			}
+			// Create new Offices and Address.
+			Address address1 = new Address("1234 Main St", null, "San Francisco", "CA", "94111");
+			Address address01 = addressRepository.save(address1);
+			
+			Address address2 = new Address("39948 Amazon Road", null, "San Mateo", "CA", "93875");
+			Address address02 = addressRepository.save(address2);
+
+			Address address3 = new Address("579 Hesperian Ave", "Suite 30", "Hayward", "CA", "95623-3221");
+			Address address03 = addressRepository.save(address3);
+
+			Address address4 = new Address("8939 Macy Way", "Room 389", "Fremont", "CO", "78532");
+			Address address04 = addressRepository.save(address4);
+
+			Address address5 = new Address("28839 First St", null, "Los Angeles", "CA", "62253");
+			Address address05 = addressRepository.save(address5);
+
+			Address address6 = new Address("3700 Cologne Pl", null, "Alameda", "UT", "56830");
+			Address address06 = addressRepository.save(address6);
+
+//			Address address7 = new Address("", null, "", "", "");
+//			Address address07 = addressRepository.save(address7);
+//
+//			Address address8 = new Address("", null, "", "", "");
+//			Address address08 = addressRepository.save(address8);
+//
+//			Address address9 = new Address("", null, "", "", "");
+//			Address address09 = addressRepository.save(address9);
+//
+//			Address address10 = new Address("", null, "", "", "");
+//			Address address010 = addressRepository.save(address10);
+			
+			Office office7 = new Office("ABC Tower", "Emily Blunt", "(349) 389-8949", "(349) 389-8949");
+			office7.setOfficeAddress(address1);
+			Office office07 = officeRepository.save(office7);
+
+			Office office8 = new Office("Nevada Plaza", "Richard Gere", "(540) 556-1895", "(569) 486-6898");
+			office8.setOfficeAddress(address2);
+			Office office08 = officeRepository.save(office8);
+
+			Office office9 = new Office("Osborne Bldg", "John Lloyd Cruz", "(587) 566-8798", "(866) 488-8888");
+			office9.setOfficeAddress(address3);
+			Office office09 = officeRepository.save(office9);
+
+			Office office10 = new Office("Trafalgar Ctr", "Bea Alonzo", "(898) 612-7558", "(888) 153-8995");
+			office10.setOfficeAddress(address4);
+			Office office010 = officeRepository.save(office10);
+			
 			
 			// Add 2 Customers
+			
 			Customer shainaCustomer = 
 					new Customer("Shaina Magdayao", "shainamagdayao@email.com", 
 							"(349) 389-8949", null, "(456) 556-7889");
-			
-			List<Office> shainaOffices = new ArrayList<Office>();
 
-			shainaOffices.add(officeRepository.findById(new Long(10000))
-					.orElseThrow(() -> new ResourceNotFoundException("Office not found for this id : " 
-							+ 10000)));
-			
-			shainaOffices.add(officeRepository.findById(new Long(10001))
-					.orElseThrow(() -> new ResourceNotFoundException("Office not found for this id : " 
-							+ 10001)));
-			
-			shainaCustomer.setOffices(shainaOffices);
-
-			shainaCustomer.setAddress(addressRepository.findById(new Long(10005))
-					.orElseThrow(() -> new ResourceNotFoundException("Address not found for this id : " 
-							+ 10005)));
+			shainaCustomer.setCustomerAddress(address5);
+			office9.addCustomer(shainaCustomer);
+			customerRepository.save(shainaCustomer);
+//			officeRepository.save(office9);
 
 			Customer angelicaCustomer = 
 					new Customer("Angelica Panganiban", "angelicap@email.com", 
 							"(788) 152-0155", "(510) 222-3333", "(415) 566-1558");
 			
-			angelicaCustomer.setAddress(addressRepository.findById(new Long(10006))
-					.orElseThrow(() -> new ResourceNotFoundException("Address not found for this id : " 
-							+ 10006)));
+			angelicaCustomer.setCustomerAddress(address6);
+			customerRepository.save(angelicaCustomer);
+			
 
 		};
 		

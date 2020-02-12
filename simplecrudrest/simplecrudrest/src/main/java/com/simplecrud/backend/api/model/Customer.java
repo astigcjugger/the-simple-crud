@@ -1,6 +1,9 @@
 package com.simplecrud.backend.api.model;
 
+import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,10 +20,13 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Customers")
-public class Customer {
+public class Customer implements Serializable {
+	
+	private static final long serialVersionUID = -6790693372856798580L;
 	
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
     
     @Column(name = "customername", nullable = false)
@@ -38,20 +44,20 @@ public class Customer {
     @Column(name = "mobilephone", nullable = true)
     private String mobilePhone;
 
-    @OneToOne(mappedBy = "customerAddress", fetch = FetchType.LAZY, 
-    		cascade = CascadeType.ALL)
-    private Address address;  
+    @OneToOne(mappedBy = "customer") 
+//    @JoinColumn(name = "ADDRESS_ID")
+    private Address customerAddress;  
     
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "customers_offices", 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinTable(
+    		name = "customers_offices", 
     		joinColumns = {
-    				@JoinColumn(name = "customer_id", referencedColumnName = "id",
-    					nullable = false, updatable = false)},
+    				@JoinColumn(name = "customer_id", referencedColumnName = "id")},
     		inverseJoinColumns = {
-    				@JoinColumn(name = "office_id", referencedColumnName = "id",
-    					nullable = false, updatable = false)}
+    				@JoinColumn(name = "office_id", referencedColumnName = "id")}
     )
-    private List<Office> offices;
+//    @ManyToMany
+    private Set<Office> offices = new HashSet<Office>();
     
     public Customer() {
     	
@@ -66,6 +72,15 @@ public class Customer {
 		this.homePhone = homePhone;
 		this.mobilePhone = mobilePhone;
 	}
+	
+    public Customer(Customer newCustomer) {
+
+    	this.customerName = newCustomer.getCustomerName();
+		this.emailAddress = newCustomer.getEmailAddress();
+		this.workPhone = newCustomer.getWorkPhone();
+		this.homePhone = newCustomer.getHomePhone();
+		this.mobilePhone = newCustomer.getMobilePhone();
+    }
 
 	public Long getId() {
 		return id;
@@ -115,21 +130,53 @@ public class Customer {
 		this.mobilePhone = mobilePhone;
 	}
 
-	public Address getAddress() {
-		return address;
+	public Address getCustomerAddress() {
+		return customerAddress;
+	}
+	
+//	public void setCustomerAddress(Address address) {
+//		this.customerAddress = address;
+//	}
+
+	public void setCustomerAddress(Address address) {
+		
+		//this.address = address;
+		if (sameAsBefore(address))
+			return;
+		
+		Address oldAddress = this.customerAddress;
+		this.customerAddress = address;
+		if (oldAddress != null)
+			oldAddress.setCustomer(null);
+		
+		if (address != null)
+			address.setCustomer(this);
+	}
+	
+	public boolean sameAsBefore(Address newAddress) {
+		
+		return customerAddress == null ? newAddress == null : customerAddress.equals(newAddress);
 	}
 
-	public void setAddress(Address address) {
-		this.address = address;
+	public Set<Office> getOffices() {
+		return new HashSet<Office>(offices);
 	}
-
-	public List<Office> getOffices() {
-		return offices;
-	}
-
-	public void setOffices(List<Office> offices) {
-		this.offices = offices;
-	}
+	
+//	public void addOffice(Office office) {
+//		if (offices.contains(office))
+//			return;
+//		
+//		offices.add(office);
+//		office.addCustomer(this);
+//	}
+//	
+//	public void removeOffice(Office office) {
+//		if (!offices.contains(office))
+//			return;
+//		
+//		offices.remove(office);
+//		office.removeCustomer(this);
+//	}
 
 	@Override
 	public String toString() {

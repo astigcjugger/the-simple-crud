@@ -46,8 +46,27 @@ public class AddressController {
     public Address createAddress(@Valid @RequestBody Address address) throws Exception {
     	
     	System.out.println("Create/add action for id: " + address.getId());
+    	Address newAddress = new Address(address);
+    	newAddress.setOffice(address.getOffice());
+    	newAddress.setCustomer(address.getCustomer());
     	
-        return addressRepository.save(address);
+        return addressRepository.save(newAddress);
+    }
+
+	@DeleteMapping("/addresses/{id}")
+    public Map<String, Boolean> deleteAddress(@PathVariable(value = "id") Long addressId)
+         throws ResourceNotFoundException {
+		
+		Address address = addressRepository.findById(addressId)
+       .orElseThrow(() -> new ResourceNotFoundException("Address not found for this id :: " + addressId));
+
+		address.setOffice(null);
+		address.setCustomer(null);
+		addressRepository.delete(address);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("deleted", Boolean.TRUE);
+        
+        return response;
     }
 
     @PutMapping("/addresses/{id}")
@@ -80,29 +99,15 @@ public class AddressController {
     			&& addressDetails.getZipCode().trim() != "")
     		address.setZipCode(addressDetails.getZipCode());
     	
-    	if (addressDetails.getCustomerAddress() != null)
-    		address.setCustomerAddress(addressDetails.getCustomerAddress());
+    	if (addressDetails.getCustomer() != null)
+    		address.setCustomer(addressDetails.getCustomer());
     	
-    	if (addressDetails.getOfficeAddress() != null)
-    		address.setOfficeAddress(addressDetails.getOfficeAddress());
+    	if (addressDetails.getOffice() != null)
+    		address.setOffice(addressDetails.getOffice());
     	
         final Address updatedAddress = addressRepository.save(address);
 
         return ResponseEntity.ok(updatedAddress);
-    }
-
-	@DeleteMapping("/addresses/{id}")
-    public Map<String, Boolean> deleteAddress(@PathVariable(value = "id") Long addressId)
-         throws ResourceNotFoundException {
-		
-		Address address = addressRepository.findById(addressId)
-       .orElseThrow(() -> new ResourceNotFoundException("Address not found for this id :: " + addressId));
-
-		addressRepository.delete(address);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
-        
-        return response;
     }
 
 //    private Address validatedAddress(Address address) {
