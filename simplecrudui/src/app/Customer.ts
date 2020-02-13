@@ -9,5 +9,5 @@ export class Customer {
     homePhone: string;
     mobilePhone: string;
     address: Address;
-    offices: Set<Office> = new Set<Office>();
+    offices: Office[];
 }

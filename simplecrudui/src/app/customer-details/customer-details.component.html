@@ -1,1 +1,87 @@
-<p>customer-details works!</p>
+<p style="height: 20px;"></p>
+
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h2>Customer Details</h2>
+  </div>
+  <div *ngIf="customer" class="panel-body">
+    <table class="table table-striped">
+      <tbody>
+        <tr>
+          <td><b>Customer Id: </b></td>
+          <td>{{customer.id}}</td>
+        </tr>
+        <tr>
+          <td><b>Customer Name: </b></td>
+          <td>{{customer.customerName}}</td>
+        </tr>
+        <tr>
+          <td><b>Email Address: </b></td>
+          <td>{{customer.emailAddress}}</td>
+        </tr>
+        <tr>
+          <td><b>Work Phone: </b></td>
+          <td>{{customer.workPhone}}</td>
+        </tr>
+        <tr>
+          <td><b>Home Phone: </b></td>
+          <td>{{customer.homePhone}}</td>
+        </tr>
+        <tr>
+          <td><b>Mobile Phone: </b></td>
+          <td>{{customer.mobilePhone}}</td>
+        </tr>
+        <tr *ngIf="address">
+          <td><b>Street Address Line #1: </b></td>
+          <td>{{address.address1}}</td>
+        </tr>
+        <tr *ngIf="address">
+          <td><b>Street Address Line #2: </b></td>
+          <td>{{address.address2}}</td>
+        </tr>
+        <tr *ngIf="address">
+          <td><b>City: </b></td>
+          <td>{{address.city}}</td>
+        </tr>
+        <tr *ngIf="address">
+          <td><b>State: </b></td>
+          <td>{{address.state}}</td>
+        </tr>
+        <tr *ngIf="address">
+          <td><b>Zip Code: </b></td>
+          <td>{{address.zipCode}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="height: 10px;"></p>
+    <div class="panel-heading">
+      <h4>Office(s)</h4>
+    </div>
+    <div *ngIf="!displayOffices">
+        <label>No office(s) assigned.</label>
+    </div>
+    <div *ngIf="displayOffices" class="panel-body">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Office Name</th>
+            <th>Main Contact Person</th>
+            <th>Main Contact Phone</th>
+            <th>Support Phone Number</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let office of offices">
+            <td>{{office.officeName}}</td>
+            <td>{{office.mainContact}}</td>
+            <td>{{office.mainPhone}}</td>
+            <td>{{office.supportPhone}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+

@@ -2,6 +2,7 @@ package com.simplecrud.backend.api.model;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,15 +13,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "Addresses")
-public class Address implements Serializable {
+public class Address {
 
-	private static final long serialVersionUID = -4238693372846798580L;
+//	private static final long serialVersionUID = -4238693372846798580L;
 	
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Column(name = "address1", nullable = true)
@@ -38,14 +40,17 @@ public class Address implements Serializable {
     @Column(name = "zipcode", nullable = true)
     private String zipCode;
     
-    @OneToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "customeraddress_id", nullable = true)
-//    @OneToOne(mappedBy = "customerAddress")
+//    @OneToOne(fetch = FetchType.LAZY, optional = true)
+//    @JoinColumn(name = "customer_id", nullable = true)
+    @OneToOne(optional = true)
+    @JoinColumn(name = "customer_id", nullable = true)
+    @JsonIgnore
     private Customer customer;
     
-    @OneToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "officeaddress_id", nullable = true)
-//    @OneToOne(mappedBy = "officeAddress")
+//    @OneToOne(fetch = FetchType.LAZY, optional = true)
+//    @JoinColumn(name = "office_id", nullable = true)
+    @OneToOne(optional = true)
+    @JoinColumn(name = "office_id", nullable = true)
     private Office office;
     
     public Address() {
@@ -53,6 +58,14 @@ public class Address implements Serializable {
     }
     
     public Address(Address newAddress) {
+		this.address1 = newAddress.getAddress1();
+		this.address2 = newAddress.getAddress2();
+		this.city = newAddress.getCity();
+		this.state = newAddress.getState();
+		this.zipCode = newAddress.getZipCode();
+    }
+    
+    public Address(com.simplecrud.backend.api.bean.Address newAddress) {
 		this.address1 = newAddress.getAddress1();
 		this.address2 = newAddress.getAddress2();
 		this.city = newAddress.getCity();
@@ -132,10 +145,10 @@ public class Address implements Serializable {
 //		Customer oldCustomer = this.customer;
 //		this.customer = customerAddress;
 //		if (oldCustomer != null) 
-//			oldCustomer.setAddress(null);
+//			oldCustomer.setCustomerAddress(null);
 //		
 //		if (customerAddress != null)
-//			customerAddress.setAddress(this);
+//			customerAddress.setCustomerAddress(this);
 //	}
 //	
 //	private boolean sameCustomerBefore(Customer newCustomer) {

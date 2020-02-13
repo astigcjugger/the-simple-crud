@@ -18,15 +18,16 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "Customers")
-public class Customer implements Serializable {
+public class Customer {
 	
-	private static final long serialVersionUID = -6790693372856798580L;
+//	private static final long serialVersionUID = -6790693372856798580L;
 	
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Column(name = "customername", nullable = false)
@@ -44,19 +45,32 @@ public class Customer implements Serializable {
     @Column(name = "mobilephone", nullable = true)
     private String mobilePhone;
 
-    @OneToOne(mappedBy = "customer") 
-//    @JoinColumn(name = "ADDRESS_ID")
+//    @OneToOne(fetch = FetchType.LAZY,
+//    		cascade = CascadeType.ALL,
+//    		mappedBy = "customer")
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Address customerAddress;  
     
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinTable(
-    		name = "customers_offices", 
-    		joinColumns = {
-    				@JoinColumn(name = "customer_id", referencedColumnName = "id")},
-    		inverseJoinColumns = {
-    				@JoinColumn(name = "office_id", referencedColumnName = "id")}
-    )
-//    @ManyToMany
+//    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+//    @JoinTable(
+//    		name = "customers_offices", 
+//    		joinColumns = {
+//    				@JoinColumn(name = "customer_id", referencedColumnName = "id")},
+//    		inverseJoinColumns = {
+//    				@JoinColumn(name = "office_id", referencedColumnName = "id")}
+//    )
+
+//    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+//    @JoinTable(
+//  		name = "customers_offices", 
+//  		joinColumns = {
+//  				@JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = true) },
+//  		inverseJoinColumns = {
+//  				@JoinColumn(name = "office_id", referencedColumnName = "id", nullable = true) }
+//    )
+    @ManyToMany
+    @JsonIgnore
     private Set<Office> offices = new HashSet<Office>();
     
     public Customer() {
@@ -80,6 +94,14 @@ public class Customer implements Serializable {
 		this.workPhone = newCustomer.getWorkPhone();
 		this.homePhone = newCustomer.getHomePhone();
 		this.mobilePhone = newCustomer.getMobilePhone();
+    }
+    
+    public Customer(com.simplecrud.backend.api.bean.Customer aCustomer) {
+    	this.customerName = aCustomer.getCustomerName();
+		this.emailAddress = aCustomer.getEmailAddress();
+		this.workPhone = aCustomer.getWorkPhone();
+		this.homePhone = aCustomer.getHomePhone();
+		this.mobilePhone = aCustomer.getMobilePhone();
     }
 
 	public Long getId() {
@@ -162,21 +184,23 @@ public class Customer implements Serializable {
 		return new HashSet<Office>(offices);
 	}
 	
-//	public void addOffice(Office office) {
-//		if (offices.contains(office))
-//			return;
-//		
-//		offices.add(office);
+	public void addOffice(Office office) {
+		if (offices.contains(office))
+			return;
+		
+		offices.add(office);
 //		office.addCustomer(this);
-//	}
-//	
-//	public void removeOffice(Office office) {
-//		if (!offices.contains(office))
-//			return;
-//		
-//		offices.remove(office);
+		office.getCustomers().put(customerName, this);
+	}
+	
+	public void removeOffice(Office office) {
+		if (!offices.contains(office))
+			return;
+		
+		offices.remove(office);
 //		office.removeCustomer(this);
-//	}
+		office.getCustomers().remove(customerName);
+	}
 
 	@Override
 	public String toString() {

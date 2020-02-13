@@ -8,6 +8,6 @@ export class Address {
     city: string;
     state: string;
     zipCode: string;
-    customerAddress: Customer;
-    officeAddress: Office;
+    customer: Customer;
+    office: Office;
 }

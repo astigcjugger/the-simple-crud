@@ -37,95 +37,88 @@ public class OfficeController {
 	private AddressRepository addressRepository;
 
     @GetMapping("/offices")
-    public List<Office> getAllOffices() {
+    public List<com.simplecrud.backend.api.bean.Office> getAllOffices() {
     	
-        return officeRepository.findAll();
+    	List<Office> listOfOffices = officeRepository.findAll();
+    	List<com.simplecrud.backend.api.bean.Office> bnOfficeListing = new ArrayList<com.simplecrud.backend.api.bean.Office>();
+    	listOfOffices.forEach(office -> {
+    		bnOfficeListing.add(new com.simplecrud.backend.api.bean.Office(office));
+    	});
+    	
+        return bnOfficeListing;
     }
 
     @GetMapping("/offices/{id}")
-    public ResponseEntity<Office> getOfficeById(@PathVariable(value = "id") Long officeId)
+    public ResponseEntity<com.simplecrud.backend.api.bean.Office> getOfficeById(@PathVariable(value = "id") Long officeId)
         throws ResourceNotFoundException {
     	
     	Office office = officeRepository.findById(officeId)
           .orElseThrow(() -> new ResourceNotFoundException("Office not found for this id :: " + officeId));
     	
-        return ResponseEntity.ok().body(office);
+    	com.simplecrud.backend.api.bean.Office bnOffice = new com.simplecrud.backend.api.bean.Office(office);
+    	
+        return ResponseEntity.ok().body(bnOffice);
     }
     
-    @PostMapping("/offices")
-    public Office createOffice(@Valid @RequestBody Office office) throws Exception {
-    	
-    	System.out.println("Create/add action for id: " + office.getId());
-    	Office newOffice = new Office(office);
+//    @PostMapping("/offices")
+//    public Office createOffice(@Valid @RequestBody Office office) throws Exception {
+//    	
+//    	System.out.println("Create/add action for id: " + office.getId());
+//    	Office newOffice = new Office(office);
+//
+//		newOffice.setOfficeAddress(office.getOfficeAddress());    		    		
+//
+//    	return officeRepository.save(newOffice);
+//    }
 
-    	if (newOffice.getOfficeAddress() == null) {
-    		newOffice.setOfficeAddress(office.getOfficeAddress());    		    		
-    	} else {
-    		
-    		Address newAddress = addressRepository.save(office.getOfficeAddress());
-    		newOffice.setOfficeAddress(newAddress);
-    	}
+//	@DeleteMapping("/offices/{id}")
+//    public Map<String, Boolean> deleteOffice(@PathVariable(value = "id") Long officeId)
+//         throws ResourceNotFoundException {
+//		
+//		Office office = officeRepository.findById(officeId)
+//       .orElseThrow(() -> new ResourceNotFoundException("Office not found for this id :: " + officeId));
+//
+//		Set<Customer> customers = office.getCustomers();
+//		customers.forEach(customer -> {
+//			office.removeCustomer(customer);
+//		});
+//		
+//		office.setOfficeAddress(null);
+//		officeRepository.delete(office);
+//        Map<String, Boolean> response = new HashMap<>();
+//        response.put("deleted", Boolean.TRUE);
+//        
+//        return response;
+//    }
 
-    	return officeRepository.save(newOffice);
-    }
-
-	@DeleteMapping("/offices/{id}")
-    public Map<String, Boolean> deleteOffice(@PathVariable(value = "id") Long officeId)
-         throws ResourceNotFoundException {
-		
-		Office office = officeRepository.findById(officeId)
-       .orElseThrow(() -> new ResourceNotFoundException("Office not found for this id :: " + officeId));
-
-		Set<Customer> customers = office.getCustomers();
-		customers.forEach(customer -> {
-			office.removeCustomer(customer);
-		});
-		
-		office.setOfficeAddress(null);
-		officeRepository.delete(office);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
-        
-        return response;
-    }
-
-    @PutMapping("/offices/{id}")
-    public ResponseEntity<Office> updateOffice(@PathVariable(value = "id") Long officeId,
-         @Valid @RequestBody Office officeDetails) throws ResourceNotFoundException, Exception {
-    	
-    	Office office = officeRepository.findById(officeId)
-        .orElseThrow(() -> new ResourceNotFoundException("Office not found for this id :: " + officeId));
-
-    	if (officeDetails == null)
-    		throw new Exception("Office information is empty.");
-    	
-    	if (officeDetails.getOfficeName() != null 
-    			&& officeDetails.getOfficeName().trim() != "")
-    		office.setOfficeName(officeDetails.getOfficeName());
-    	
-    	office.setMainPhone(officeDetails.getMainPhone());
-    	office.setMainPhone(officeDetails.getMainPhone());
-    	office.setSupportPhone(officeDetails.getSupportPhone());
-    	    	
-    	office.setOfficeAddress(officeDetails.getOfficeAddress());    		
-    	if (!office.sameAsBefore(officeDetails.getOfficeAddress())) {
-        	if (officeDetails.getOfficeAddress() == null) {
-        		office.setOfficeAddress(officeDetails.getOfficeAddress());    		    		
-        	} else {
-        		
-        		Address newAddress = addressRepository.save(officeDetails.getOfficeAddress());
-        		office.setOfficeAddress(newAddress);
-        	}
-    	}
-    	
-		Set<Customer> tmpCustomers = office.getCustomers();
-		tmpCustomers.forEach(customer -> {
-			office.removeCustomer(customer);
-		});
-		    	
-        final Office updatedOffice = officeRepository.save(office);
-
-        return ResponseEntity.ok(updatedOffice);
-    }
+//    @PutMapping("/offices/{id}")
+//    public ResponseEntity<Office> updateOffice(@PathVariable(value = "id") Long officeId,
+//         @Valid @RequestBody Office officeDetails) throws ResourceNotFoundException, Exception {
+//    	
+//    	Office office = officeRepository.findById(officeId)
+//        .orElseThrow(() -> new ResourceNotFoundException("Office not found for this id :: " + officeId));
+//
+//    	if (officeDetails == null)
+//    		throw new Exception("Office information is empty.");
+//    	
+//    	if (officeDetails.getOfficeName() != null 
+//    			&& officeDetails.getOfficeName().trim() != "")
+//    		office.setOfficeName(officeDetails.getOfficeName());
+//    	
+//    	office.setMainPhone(officeDetails.getMainPhone());
+//    	office.setMainPhone(officeDetails.getMainPhone());
+//    	office.setSupportPhone(officeDetails.getSupportPhone());
+//    	    	
+//    	office.setOfficeAddress(officeDetails.getOfficeAddress());    		
+//    	
+//		Set<Customer> tmpCustomers = office.getCustomers();
+//		tmpCustomers.forEach(customer -> {
+//			office.removeCustomer(customer);
+//		});
+//		    	
+//        final Office updatedOffice = officeRepository.save(office);
+//
+//        return ResponseEntity.ok(updatedOffice);
+//    }
 
 }

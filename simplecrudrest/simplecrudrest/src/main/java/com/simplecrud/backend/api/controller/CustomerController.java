@@ -34,8 +34,6 @@ public class CustomerController {
 	private CustomerRepository customerRepository;
 	@Autowired
 	private OfficeRepository officeRepository;
-	@Autowired
-	private AddressRepository addressRepository;
 
     @GetMapping("/customers")
     public List<Customer> getAllCustomers() {
@@ -44,37 +42,36 @@ public class CustomerController {
     }
 
     @GetMapping("/customers/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable(value = "id") Long customerId)
+    public ResponseEntity<com.simplecrud.backend.api.bean.Customer> getCustomerById(@PathVariable(value = "id") Long customerId)
         throws ResourceNotFoundException {
     	
     	Customer customer = customerRepository.findById(customerId)
           .orElseThrow(() -> new ResourceNotFoundException("Customer not found for this id :: " + customerId));
     	
-        return ResponseEntity.ok().body(customer);
+    	com.simplecrud.backend.api.bean.Customer bnCustomer = new com.simplecrud.backend.api.bean.Customer(customer);    	
+
+    	System.out.println("Customer address: " + bnCustomer.getAddress());
+    	System.out.println("Customer office(s): " + bnCustomer.getOffices());
+    	
+        return ResponseEntity.ok().body(bnCustomer);
     }
     
     @PostMapping("/customers")
-    public Customer createCustomer(@Valid @RequestBody Customer customer) throws Exception {
+    public com.simplecrud.backend.api.bean.Customer createCustomer(@Valid @RequestBody com.simplecrud.backend.api.bean.Customer customer) throws Exception {
     	
     	System.out.println("Create/add action for id: " + customer.getId());
     	Customer newCustomer = new Customer(customer);
-    	
-    	if (customer.getCustomerAddress() == null) {
-        	newCustomer.setCustomerAddress(customer.getCustomerAddress());    		    		
-    	} else {
-    		
-    		Address newAddress = addressRepository.save(customer.getCustomerAddress());
-    		newCustomer.setCustomerAddress(newAddress);
-    	}
-    	
-    	Set<Office> tmpCDOffices = customer.getOffices();    	
-    	tmpCDOffices.forEach(sentOffice -> {
-			Office anOffice = officeRepository.findById(sentOffice.getId()).orElse(null);
-			if (anOffice != null)
-				anOffice.addCustomer(newCustomer);    		
+    	newCustomer.setCustomerAddress(new Address(customer.getAddress()));    		    		
+
+//    	Set<Office> tmpCDOffices = newCustomer.getOffices();    	
+    	customer.getOffices().forEach(bnOffice -> {
+    		newCustomer.getOffices().add(officeRepository.findById(bnOffice.getId()).orElse(null));
     	});
     	
-        return customerRepository.save(newCustomer);
+    	Customer updatedCustomer = customerRepository.save(newCustomer);
+    	com.simplecrud.backend.api.bean.Customer retCustomer = new com.simplecrud.backend.api.bean.Customer(updatedCustomer);
+    	
+        return retCustomer;
     }
 
 	@DeleteMapping("/customers/{id}")
@@ -98,8 +95,8 @@ public class CustomerController {
     }
 
     @PutMapping("/customers/{id}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable(value = "id") Long customerId,
-         @Valid @RequestBody Customer customerDetails) throws ResourceNotFoundException, Exception {
+    public ResponseEntity<com.simplecrud.backend.api.bean.Customer> updateCustomer(@PathVariable(value = "id") Long customerId,
+         @Valid @RequestBody com.simplecrud.backend.api.bean.Customer customerDetails) throws ResourceNotFoundException, Exception {
     	
     	Customer customer = customerRepository.findById(customerId)
         .orElseThrow(() -> new ResourceNotFoundException("Customer not found for this id :: " + customerId));
@@ -116,34 +113,33 @@ public class CustomerController {
     	customer.setMobilePhone(customerDetails.getMobilePhone());
     	customer.setWorkPhone(customerDetails.getWorkPhone());    	
     	
-		if (!customer.sameAsBefore(customerDetails.getCustomerAddress())) {
-	    	if (customerDetails.getCustomerAddress() == null) {
-	    		customer.setCustomerAddress(customer.getCustomerAddress());    		    		
-	    	} else {
-	    		
-	    		Address newAddress = addressRepository.save(customerDetails.getCustomerAddress());
-	    		customer.setCustomerAddress(newAddress);
-	    	}			
-		}
+    	Address currAddress = customer.getCustomerAddress();
+    	if (currAddress == null) {
+    		customer.setCustomerAddress(customerDetails.getAddress() == null ? null : new Address(customerDetails.getAddress()));    		
+    	} else {
+    		com.simplecrud.backend.api.bean.Address detAddress = customerDetails.getAddress();
+    		currAddress.setAddress1(detAddress.getAddress1());
+    		currAddress.setAddress2(detAddress.getAddress2());
+    		currAddress.setCity(detAddress.getCity());
+    		currAddress.setState(detAddress.getState());
+    		currAddress.setZipCode(detAddress.getZipCode());
+    	}
+		
     	
     	Set<Office> custOffices = customer.getOffices();
-    	if (!custOffices.containsAll(customerDetails.getOffices())) {
-        	
-    		custOffices.forEach(currentOffice -> {
-        		currentOffice.removeCustomer(customer);
-        	});
-        	
-        	Set<Office> tmpCDOffices = customerDetails.getOffices();    	
-        	tmpCDOffices.forEach(sentOffice -> {
-    			Office anOffice = officeRepository.findById(sentOffice.getId()).orElse(null);
-    			if (anOffice != null)
-    				anOffice.addCustomer(customer);    		
-        	});
-    	}
-    	    	
-        final Customer updatedCustomer = customerRepository.save(customer);
+		custOffices.forEach(currentOffice -> {
+    		currentOffice.removeCustomer(customer);
+    	});
+		
+    	customerDetails.getOffices().forEach(bnOffice -> {
+    		customer.getOffices().add(officeRepository.findById(bnOffice.getId()).orElse(null));
+    	});
 
-        return ResponseEntity.ok(updatedCustomer);
+    	
+        final Customer updatedCustomer = customerRepository.save(customer);
+    	com.simplecrud.backend.api.bean.Customer retCustomer = new com.simplecrud.backend.api.bean.Customer(updatedCustomer);
+
+        return ResponseEntity.ok(retCustomer);
     }
 
 }

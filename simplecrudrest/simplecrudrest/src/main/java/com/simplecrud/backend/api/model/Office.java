@@ -20,16 +20,18 @@ import javax.persistence.ManyToMany;
 import javax.persistence.MapKey;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "Offices")
-public class Office implements Serializable {
+public class Office {
 
-	private static final long serialVersionUID = -8690693372846798580L;
+//	private static final long serialVersionUID = -8690693372846798580L;
 	
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Column(name = "officename", nullable = false)
@@ -44,21 +46,33 @@ public class Office implements Serializable {
     @Column(name = "supportphone", nullable = true)
     private String supportPhone;
     
-    @OneToOne(mappedBy = "office")
-//    @OneToOne
-//    @JoinColumn(name = "ADDRESS_ID")
+//    @OneToOne(fetch = FetchType.LAZY,
+//    		cascade = CascadeType.ALL,
+//    		mappedBy = "office")
+    @OneToOne(mappedBy = "office", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Address officeAddress;
     
-//    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "offices")
-//    private Set<Customer> customers = new HashSet<Customer>();
-    @ManyToMany(mappedBy = "offices", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    private Set<Customer> customers= new HashSet<Customer>();
+//xx    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "offices")
+//xx    private Set<Customer> customers = new HashSet<Customer>();
+    @ManyToMany(mappedBy = "offices", fetch = FetchType.EAGER, cascade = CascadeType.ALL )
+    @MapKey(name = "customerName")
+    @JsonIgnore
+    private Map<String, Customer> customers = new HashMap<String, Customer>();
+//  private Set<Customer> customers= new HashSet<Customer>();
 
     public Office() {
     	
     }
     
     public Office(Office newOffice) {
+		this.officeName = newOffice.getOfficeName();
+		this.mainContact = newOffice.getMainContact();
+		this.mainPhone = newOffice.getMainPhone();
+		this.supportPhone = newOffice.getSupportPhone();
+    }    
+    
+    public Office(com.simplecrud.backend.api.bean.Office newOffice) {
 		this.officeName = newOffice.getOfficeName();
 		this.mainContact = newOffice.getMainContact();
 		this.mainPhone = newOffice.getMainPhone();
@@ -139,23 +153,43 @@ public class Office implements Serializable {
 		return officeAddress == null ? newAddress == null : officeAddress.equals(newAddress);
 	}	
 	
-	public Set<Customer> getCustomers() {
-		return new HashSet<Customer>(customers);
+//	public Set<Customer> getCustomers() {
+//		return new HashSet<Customer>(customers);
+//	}
+//
+//	public void addCustomer(Customer customer) {
+//		if (customers.contains(customer))
+//			return;
+//		
+//		customers.add(customer);
+//		customer.getOffices().add(this);
+//	}
+//	
+//	public void removeCustomer(Customer customer) {
+//		if (!customers.contains(customer))
+//			return;
+//		
+//		customers.remove(customer);
+//		customer.getOffices().remove(this);		
+//	}	
+
+	public Map<String, Customer> getCustomers() {
+		return new HashMap<String, Customer>(customers);
 	}
 
 	public void addCustomer(Customer customer) {
-		if (customers.contains(customer))
+		if (customers.containsValue(customer))
 			return;
-		
-		customers.add(customer);
+	
+		customers.put(customer.getCustomerName(), customer);
 		customer.getOffices().add(this);
 	}
-	
+
 	public void removeCustomer(Customer customer) {
-		if (!customers.contains(customer))
+		if (!customers.containsValue(customer))
 			return;
-		
-		customers.remove(customer);
+	
+		customers.remove(customer.getCustomerName());
 		customer.getOffices().remove(this);		
 	}	
 
