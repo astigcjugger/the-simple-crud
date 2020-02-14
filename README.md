@@ -20,6 +20,7 @@ Second (and third part) is/are based on the following technologies and implement
 3. Spring Boot
 4. JPA/Data API
 5. Hibernate
+6. H2 database (in-memory persistence/storage)
 
 Please search the internet to download, install and/or configure Java.  The rest are dependencies included in the POM file of the API.
 You can use Java-based IDEs for development but I used Spring Tool Suite (STS) 4 for this development.  
