@@ -17,7 +17,7 @@ export class AddCustomerComponent implements OnInit {
   submitted: boolean = false;
   createmsg: string = 'Successfully submitted. Added new customer.';
   address: Address = new Address;
-  custOffices: Office[] = new Array<Office>();
+//  custOffices: Office[] = new Array<Office>();
   offices: Office[] = new Array<Office>();
   hidePartOne: boolean = false;
   hidePartTwo: boolean = true;
@@ -75,16 +75,16 @@ export class AddCustomerComponent implements OnInit {
 
   save() {
     this.customer.address = this.address;
+    this.customer.offices = new Array<Office>();
     console.log('SelectedOfficeIds...');
     console.log(this.selectedOfficeIds);
     let tempOffices = this.selectedOfficeIds.values();
     for (let anOffice of tempOffices) {
       console.log('Office being selected and loaded...')
       console.log(anOffice);
-      this.custOffices.push(anOffice);
+      this.customer.offices.push(anOffice);
     }
 
-    this.customer.offices = this.custOffices;
     this.customerService.addCustomer(this.customer).subscribe(
       data => console.log(data), 
       error => {

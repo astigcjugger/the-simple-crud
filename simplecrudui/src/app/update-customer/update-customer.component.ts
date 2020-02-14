@@ -25,6 +25,10 @@ export class UpdateCustomerComponent implements OnInit {
   officeCount: number;
   displayOffices = false;
 
+  custOffices: Office[] = new Array<Office>();
+  selectedOfficeIds: Map<number, Office>;
+  mapOfOffices: Map<number, Office>;
+
   constructor(private route: ActivatedRoute,
     private router: Router, 
     private customerService: CustomerService,
