@@ -15,17 +15,18 @@ export class AddressService {
     return this.http.get(`${this.baseUrl}/${id}`);
   }
 
-  createAddress(address: Object): Observable<Object> {
-    return this.http.post(`${this.baseUrl}`, address);
-  }
+// for implementation
+  // createAddress(address: Object): Observable<Object> {
+  //   return this.http.post(`${this.baseUrl}`, address);
+  // }
 
-  updateAddress(id: number, value: any): Observable<Object> {
-    return this.http.put(`${this.baseUrl}/${id}`, value);
-  }
+  // updateAddress(id: number, value: any): Observable<Object> {
+  //   return this.http.put(`${this.baseUrl}/${id}`, value);
+  // }
 
-  deleteAddress(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' });
-  }
+  // deleteAddress(id: number): Observable<any> {
+  //   return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' });
+  // }
 
   getAddressList(): Observable<any> {
     return this.http.get(`${this.baseUrl}`);

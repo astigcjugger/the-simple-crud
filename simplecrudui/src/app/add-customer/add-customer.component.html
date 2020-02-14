@@ -1,1 +1,121 @@
-<p>add-customer works!</p>
+<p style="height: 20px;"></p>
+
+<div [hidden]="submitted">
+    <form (ngSubmit)="onSubmit()">
+        <div [hidden]="hidePartOne" style="width: 400px;">
+          <!-- Displaying Part One -->
+        <h3>Add new Customer</h3>
+        <div class="form-group">
+            <label for="name">Customer Name *</label>
+            <input type="text" class="form-control" id="customerName" required [(ngModel)]="customer.customerName" name="customerName">
+        </div>
+
+        <div class="form-group">
+          <label for="name">Email Address</label>
+          <input type="text" class="form-control" id="emailAddress" [(ngModel)]="customer.emailAddress"
+            name="emailAddress">
+        </div>
+
+        <div class="form-group">
+          <label for="name">Home Phone</label>
+          <input type="text" class="form-control" id="homePhone" [(ngModel)]="customer.homePhone"
+            name="homePhone">
+        </div>
+
+        <div class="form-group">
+          <label for="name">Work Phone</label>
+          <input type="text" class="form-control" id="workPhone" [(ngModel)]="customer.workPhone"
+            name="workPhone">
+        </div>
+
+        <div class="form-group">
+          <label for="name">Mobile Phone</label>
+          <input type="text" class="form-control" id="mobilePhone" [(ngModel)]="customer.mobilePhone"
+            name="mobilePhone">
+        </div>
+
+        <div class="form-group">
+          <label for="name">Street Address Line #1 *</label>
+          <input type="text" class="form-control" id="address1" required [(ngModel)]="address.address1"
+            name="address1">
+        </div>
+
+        <div class="form-group">
+          <label for="name">Street Address Line #2</label>
+          <input type="text" class="form-control" id="address2" [(ngModel)]="address.address2" name="address2">
+        </div>
+
+        <div class="form-group">
+          <label for="name">City</label>
+          <input type="text" class="form-control" id="city" required [(ngModel)]="address.city"
+            name="city">
+        </div>
+
+        <div class="form-group">
+          <label for="name">State</label>
+          <input type="text" class="form-control" id="state" required [(ngModel)]="address.state"
+            name="state">
+        </div>
+
+        <div class="form-group">
+          <label for="name">Zip Code</label>
+          <input type="text" class="form-control" id="zipCode" [(ngModel)]="address.zipCode"
+            name="zipCode">
+        </div>
+
+        <button type="button" (click)="nextClicked()" class="btn btn-info">Next &gt;</button>&nbsp;&nbsp;
+        <label style="font-size: 14px; font-family: Arial, Helvetica, sans-serif;">to assign office location(s).</label>
+
+        </div> <!-- Displaying Part One -->
+
+        <div class="form-group" [hidden]="hidePartTwo">
+          <!-- Displaying Part Two -->
+            
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h2>Office Locations</h2>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center;">Assign?</th>
+                            <th>Office Id</th>
+                            <th>Office Name</th>
+                            <th>Main Contact Person</th>
+                            <th>Main Contact Phone</th>
+                            <th>Support Phone</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let office of offices">
+                            <td style="text-align: center;"><input type="checkbox" id="assignOffice" name="assignOffice"></td>
+                            <td>{{office.id}}</td>
+                            <td>{{office.officeName}}</td>
+                            <td>{{office.mainContact}}</td>
+                            <td>{{office.mainPhone}}</td>
+                            <td>{{office.supportPhone}}</td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <button type="button" (click)="backClicked()" class="btn btn-info">&lt; Back</button>&nbsp;&nbsp;&nbsp;
+            <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+    </form>
+
+</div>
+
+<div [hidden]="!submitted">
+    <div>
+        <h5>{{createmsg}}</h5>
+    </div>
+    <div>
+        <!-- <p>Click <a routerLink="/add" (click)="addNew()" style="text-decoration: underline; font-weight: bold;">here</a> to add another customer.</p> -->
+        <p>Click <a routerLink="/add" style="text-decoration: underline; font-weight: bold;">here</a>
+          to add another customer.</p>
+    </div>
+
+</div>

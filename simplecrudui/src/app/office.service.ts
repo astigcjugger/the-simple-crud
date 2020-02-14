@@ -15,17 +15,18 @@ export class OfficeService {
     return this.http.get(`${this.baseUrl}/${id}`);
   }
 
-  createOffice(office: Object): Observable<Object> {
-    return this.http.post(`${this.baseUrl}`, office);
-  }
+// for implementation
+  // createOffice(office: Object): Observable<Object> {
+  //   return this.http.post(`${this.baseUrl}`, office);
+  // }
 
-  updateOffices(id: number, value: any): Observable<Object> {
-    return this.http.put(`${this.baseUrl}/${id}`, value);
-  }
+  // updateOffices(id: number, value: any): Observable<Object> {
+  //   return this.http.put(`${this.baseUrl}/${id}`, value);
+  // }
 
-  deleteOffice(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' });
-  }
+  // deleteOffice(id: number): Observable<any> {
+  //   return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' });
+  // }
 
   getOfficeList(): Observable<any> {
     return this.http.get(`${this.baseUrl}`);

@@ -1,1 +1,146 @@
-<p>update-customer works!</p>
+<p style="height: 20px;"></p>
+
+<div [hidden]="submitted">
+  <form (ngSubmit)="onSubmit()">
+    <div [hidden]="hidePartOne">
+      <!-- Displaying Part One -->
+      <div class="panel panel-primary" style="width: 400px;">
+      <div class="panel-heading">
+          <h3>Update Customer Information</h3>
+      </div>
+      <div class="panel-body">
+      <div class="form-group">
+        <label for="name">Customer Name</label>
+        <input type="text" class="form-control" id="customerName" required [(ngModel)]="customer.customerName"
+          name="customerName">
+      </div>
+
+      <div class="form-group">
+        <label for="name">Email Address</label>
+        <input type="text" class="form-control" id="emailAddress" [(ngModel)]="customer.emailAddress"
+          name="emailAddress">
+      </div>
+
+      <div class="form-group">
+        <label for="name">Home Phone</label>
+        <input type="text" class="form-control" id="homePhone" [(ngModel)]="customer.homePhone" name="homePhone">
+      </div>
+
+      <div class="form-group">
+        <label for="name">Work Phone</label>
+        <input type="text" class="form-control" id="workPhone" [(ngModel)]="customer.workPhone" name="workPhone">
+      </div>
+
+      <div class="form-group">
+        <label for="name">Mobile Phone</label>
+        <input type="text" class="form-control" id="mobilePhone" [(ngModel)]="customer.mobilePhone" name="mobilePhone">
+      </div>
+
+      <div class="form-group">
+        <label for="name">Street Address Line #1</label>
+        <input type="text" class="form-control" id="address1" required [(ngModel)]="address.address1" name="address1">
+      </div>
+
+      <div class="form-group">
+        <label for="name">Street Address Line #2</label>
+        <input type="text" class="form-control" id="address2" [(ngModel)]="address.address2" name="address2">
+      </div>
+
+      <div class="form-group">
+        <label for="name">City</label>
+        <input type="text" class="form-control" id="city" required [(ngModel)]="address.city" name="city">
+      </div>
+
+      <div class="form-group">
+        <label for="name">State</label>
+        <input type="text" class="form-control" id="state" required [(ngModel)]="address.state" name="state">
+      </div>
+
+      <div class="form-group">
+        <label for="name">Zip Code</label>
+        <input type="text" class="form-control" id="zipCode" [(ngModel)]="address.zipCode" name="zipCode">
+      </div>
+      </div>
+      </div>
+
+      <p style="height: 10px;"></p>
+      <div class="panel-heading">
+        <h4>Assigned Office location(s)</h4>
+      </div>
+
+      <div *ngIf="!displayOffices">
+        <p>No office location(s) assigned.</p>
+      </div>
+
+      <div *ngIf="displayOffices" class="panel-body">
+        <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Office Name</th>
+            <th>Main Contact Person</th>
+            <th>Main Contact Phone</th>
+            <th>Support Phone Number</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let assignedOffice of assignedOffices">
+            <td>{{assignedOffice.officeName}}</td>
+            <td>{{assignedOffice.mainContact}}</td>
+            <td>{{assignedOffice.mainPhone}}</td>
+            <td>{{assignedOffice.supportPhone}}</td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+
+      <button type="button" (click)="nextClicked()" class="btn btn-info">Next &gt;</button>&nbsp;&nbsp;
+      <label style="font-size: 14px; font-family: Arial, Helvetica, sans-serif;">to assign/update office location(s).</label>
+
+    </div> <!-- Displaying Part One -->
+
+    <div class="form-group" [hidden]="hidePartTwo">
+      <!-- Displaying Part Two -->
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h2>Office Locations</h2>
+        </div>
+        <div class="panel-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th style="text-align: center;">Assign?</th>
+                <th>Office Id</th>
+                <th>Office Name</th>
+                <th>Main Contact Person</th>
+                <th>Main Contact Phone</th>
+                <th>Support Phone</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let office of offices">
+                <td style="text-align: center;"><input type="checkbox" id="assignOffice" name="assignOffice"></td>
+                <td>{{office.id}}</td>
+                <td>{{office.officeName}}</td>
+                <td>{{office.mainContact}}</td>
+                <td>{{office.mainPhone}}</td>
+                <td>{{office.supportPhone}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <button type="button" (click)="backClicked()" class="btn btn-info">&lt; Back</button>&nbsp;&nbsp;&nbsp;
+      <button type="submit" class="btn btn-success">Submit</button>
+    </div>
+  </form>
+
+</div>
+
+<div [hidden]="!submitted">
+  <div>
+    <h5>{{updatemsg}}</h5>
+  </div>
+
+</div>

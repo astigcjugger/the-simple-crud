@@ -17,8 +17,8 @@ export class CustomerDetailsComponent implements OnInit {
   id: number;
   customer: Customer;
   address: Address;
-  offices: Office[];
-  officeCount: number = 0;
+  offices: Office[] = new Array<Office>();
+  officeCount: number;
   displayOffices = false;
 
   constructor(private route: ActivatedRoute, private router: Router,
@@ -35,9 +35,11 @@ export class CustomerDetailsComponent implements OnInit {
       this.customer = data;
       this.address = data.address;
       this.offices = data.offices;
-      console.log('Offices: ' + this.offices)
-      this.officeCount = data.offices != null ? this.offices.length : 0
-      this.displayOffices = data.offices != null && this.officeCount > 0
+      console.log('Offices: ' + this.offices);
+      this.officeCount = data.offices !== null ? data.offices.length : 0;
+      console.log('Office count: ' + this.officeCount);
+      this.displayOffices = data.offices !== null && this.officeCount > 0;
+      console.log('Display office? ' + this.displayOffices);
     }, error => console.log(error));
   }
 

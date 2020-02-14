@@ -5,7 +5,7 @@
     <h2>Customer Details</h2>
   </div>
   <div *ngIf="customer" class="panel-body">
-    <table class="table table-striped">
+    <table class="table table-striped" style="width: 500px;">
       <tbody>
         <tr>
           <td><b>Customer Id: </b></td>
@@ -56,10 +56,10 @@
 
     <p style="height: 10px;"></p>
     <div class="panel-heading">
-      <h4>Office(s)</h4>
+      <h4>Assigned Office location(s)</h4>
     </div>
     <div *ngIf="!displayOffices">
-        <label>No office(s) assigned.</label>
+        <label>No office location(s) assigned.</label>
     </div>
     <div *ngIf="displayOffices" class="panel-body">
       <table class="table table-striped">

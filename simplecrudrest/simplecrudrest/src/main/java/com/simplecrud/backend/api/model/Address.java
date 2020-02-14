@@ -25,16 +25,16 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "address1", nullable = true)
+    @Column(name = "address1", nullable = false)
     private String address1;
 
     @Column(name = "address2", nullable = true)
     private String address2;
     
-    @Column(name = "city", nullable = true)
+    @Column(name = "city", nullable = false)
     private String city;
     
-    @Column(name = "state", nullable = true)
+    @Column(name = "state", nullable = false)
     private String state;
  
     @Column(name = "zipcode", nullable = true)

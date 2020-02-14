@@ -65,7 +65,7 @@ public class CustomerController {
 
 //    	Set<Office> tmpCDOffices = newCustomer.getOffices();    	
     	customer.getOffices().forEach(bnOffice -> {
-    		newCustomer.getOffices().add(officeRepository.findById(bnOffice.getId()).orElse(null));
+    		newCustomer.addOffice(officeRepository.findById(bnOffice.getId()).orElse(null));
     	});
     	
     	Customer updatedCustomer = customerRepository.save(newCustomer);
@@ -124,7 +124,6 @@ public class CustomerController {
     		currAddress.setState(detAddress.getState());
     		currAddress.setZipCode(detAddress.getZipCode());
     	}
-		
     	
     	Set<Office> custOffices = customer.getOffices();
 		custOffices.forEach(currentOffice -> {
