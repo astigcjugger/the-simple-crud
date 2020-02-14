@@ -89,7 +89,7 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let office of offices">
-                            <td style="text-align: center;"><input type="checkbox" id="assignOffice" name="assignOffice"></td>
+                            <td style="text-align: center;"><input type="checkbox" value="{{office.id}}" (change)="onChange(office.id, $event.target.checked)"></td>
                             <td>{{office.id}}</td>
                             <td>{{office.officeName}}</td>
                             <td>{{office.mainContact}}</td>
@@ -114,7 +114,7 @@
     </div>
     <div>
         <!-- <p>Click <a routerLink="/add" (click)="addNew()" style="text-decoration: underline; font-weight: bold;">here</a> to add another customer.</p> -->
-        <p>Click <a routerLink="/add" style="text-decoration: underline; font-weight: bold;">here</a>
+       <br><p>Click <a routerLink="/add" style="text-decoration: underline; font-weight: bold;">here</a>
           to add another customer.</p>
     </div>
 
