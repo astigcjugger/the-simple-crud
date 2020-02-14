@@ -5,6 +5,7 @@ import { Office } from '../Office';
 import { CustomerService } from '../customer.service';
 import { OfficeService } from '../office.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { SelectOffice } from './SelectOffice';
 
 @Component({
   selector: 'app-update-customer',
@@ -21,13 +22,13 @@ export class UpdateCustomerComponent implements OnInit {
   offices: Office[] = new Array<Office>();
   hidePartOne = false;
   hidePartTwo = true;
-  assignedOffices: Office[] = new Array<Office>();
   officeCount: number;
   displayOffices = false;
 
-  custOffices: Office[] = new Array<Office>();
-  selectedOfficeIds: Map<number, Office>;
-  mapOfOffices: Map<number, Office>;
+  assignedOffices: Office[] = new Array<Office>();
+  selectedOffices: Map<number, Office>;
+  mapOfOffices: Map<number, SelectOffice>;
+  temporaryOffices: SelectOffice[];
 
   constructor(private route: ActivatedRoute,
     private router: Router, 
@@ -57,11 +58,65 @@ export class UpdateCustomerComponent implements OnInit {
         console.log('Offices: ' + this.offices);
         this.officeCount = data.offices !== null ? data.offices.length : 0;
         this.displayOffices = data.offices !== null && this.officeCount > 0;
+        this.loadOffices();
     }, error => console.log(error));
+  }
+
+  loadOffices() {
+    console.log('Contents of Offices[]');
+    console.log(this.offices);
+    console.log(this.assignedOffices);
+    this.selectedOffices = new Map<number, Office>();
+    for (let office of this.assignedOffices) {
+      this.selectedOffices.set(office.id, office);
+    }
+
+    this.mapOfOffices = new Map<number, SelectOffice>();
+    for (let office of this.offices) {
+      console.log('Office entry: ');
+      console.log(office);
+      let aSelectOffice = new SelectOffice();
+      aSelectOffice.id = office.id;
+      aSelectOffice.office = office;
+      aSelectOffice.isSelected = this.selectedOffices.has(office.id);
+      this.mapOfOffices.set(office.id, aSelectOffice);
+    }
+
+    console.log('Contents of mapOfOffices: Map()...');
+    console.log(this.mapOfOffices);
+
+    let iterOffices = this.mapOfOffices.values();
+    this.temporaryOffices = [];
+    for (let iterOffice of iterOffices) {
+      this.temporaryOffices.push(iterOffice);
+    }
+  }
+
+  onChange(officeId: number, isChecked: boolean) {
+    console.log('OfficeId: ' + officeId);
+    console.log('Is checked? ' + isChecked);
+    console.log(officeId);
+    this.mapOfOffices.get(officeId).isSelected = isChecked;
+    if (isChecked) {
+      this.selectedOffices.set(officeId, this.mapOfOffices.get(officeId).office);
+    } else {
+      this.selectedOffices.delete(officeId);
+    }
+    console.log(this.mapOfOffices.get(officeId));
   }
 
   save() {
     this.customer.address = this.address;
+    this.customer.offices = new Array<Office>();
+    console.log('SelectedOffices...');
+    console.log(this.selectedOffices);
+    let tempOffices = this.selectedOffices.values();
+    for (let anOffice of tempOffices) {
+      console.log('Office being selected and loaded...')
+      console.log(anOffice);
+      this.customer.offices.push(anOffice);
+    }
+
     this.customerService.updateCustomer(this.id, this.customer).subscribe(
       data => console.log(data),
       error => {

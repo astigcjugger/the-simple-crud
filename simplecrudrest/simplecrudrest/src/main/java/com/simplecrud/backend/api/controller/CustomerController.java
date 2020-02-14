@@ -34,6 +34,8 @@ public class CustomerController {
 	private CustomerRepository customerRepository;
 	@Autowired
 	private OfficeRepository officeRepository;
+	@Autowired
+	private AddressRepository addressRepository;
 
     @GetMapping("/customers")
     public List<Customer> getAllCustomers() {
@@ -83,11 +85,15 @@ public class CustomerController {
 
     	Set<Office> tmpOffices = customer.getOffices();
     	tmpOffices.forEach(tmpOffice -> {
-    		tmpOffice.removeCustomer(customer);
+//    		tmpOffice.removeCustomer(customer);
+    		customer.removeOffice(tmpOffice);
     	});
     	
+    	Long addressId = customer.getCustomerAddress().getId();    	
     	customer.setCustomerAddress(null);
 		customerRepository.delete(customer);
+		
+		addressRepository.delete(addressRepository.findById(addressId).orElse(null));
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
         
@@ -123,15 +129,21 @@ public class CustomerController {
     		currAddress.setCity(detAddress.getCity());
     		currAddress.setState(detAddress.getState());
     		currAddress.setZipCode(detAddress.getZipCode());
+    		addressRepository.save(currAddress);
     	}
     	
     	Set<Office> custOffices = customer.getOffices();
-		custOffices.forEach(currentOffice -> {
-    		currentOffice.removeCustomer(customer);
+    	custOffices.forEach(currOffice -> {
+    		customer.removeOffice(currOffice);
     	});
+    	
+//    	Set<Office> custOffices = customer.getOffices();
+//		custOffices.forEach(currentOffice -> {
+//    		currentOffice.removeCustomer(customer);
+//    	});
 		
     	customerDetails.getOffices().forEach(bnOffice -> {
-    		customer.getOffices().add(officeRepository.findById(bnOffice.getId()).orElse(null));
+    		customer.addOffice(officeRepository.findById(bnOffice.getId()).orElse(null));
     	});
 
     	

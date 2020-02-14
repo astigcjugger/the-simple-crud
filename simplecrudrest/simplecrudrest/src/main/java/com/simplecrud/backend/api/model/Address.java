@@ -40,7 +40,7 @@ public class Address {
     @Column(name = "zipcode", nullable = true)
     private String zipCode;
     
-//    @OneToOne(fetch = FetchType.LAZY, optional = true)
+//    @OneToOne(fetch = FetchType.LAZY, optional = true)S
 //    @JoinColumn(name = "customer_id", nullable = true)
     @OneToOne(optional = true)
     @JoinColumn(name = "customer_id", nullable = true)

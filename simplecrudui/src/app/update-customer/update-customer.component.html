@@ -118,13 +118,14 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let office of offices">
-                <td style="text-align: center;"><input type="checkbox" id="assignOffice" name="assignOffice"></td>
-                <td>{{office.id}}</td>
-                <td>{{office.officeName}}</td>
-                <td>{{office.mainContact}}</td>
-                <td>{{office.mainPhone}}</td>
-                <td>{{office.supportPhone}}</td>
+              <tr *ngFor="let tempOffice of temporaryOffices">
+              <td style="text-align: center;"><input type="checkbox" [checked]="tempOffice.isSelected"
+                  value="{{tempOffice.id}}" (change)="onChange(tempOffice.id, $event.target.checked)"></td>
+                <td>{{tempOffice.id}}</td>
+                <td>{{tempOffice.office.officeName}}</td>
+                <td>{{tempOffice.office.mainContact}}</td>
+                <td>{{tempOffice.office.mainPhone}}</td>
+                <td>{{tempOffice.office.supportPhone}}</td>
               </tr>
             </tbody>
           </table>
