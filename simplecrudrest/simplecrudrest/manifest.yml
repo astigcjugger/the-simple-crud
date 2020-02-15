@@ -1,0 +1,7 @@
+---
+applications :
+- name : "simplecrudrest"
+  path : "target"
+  memory : 256M
+  buildpack :
+  - "https://github.com/cloudfoundry/staticfile-buildpack.git"
