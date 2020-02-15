@@ -1,0 +1,7 @@
+---
+applications :
+- name : "simplecrudui"
+  path : "dist/simplecrudui"
+  memory : 128M
+  buildpack :
+  - "https://github.com/cloudfoundry/staticfile-buildpack.git"
