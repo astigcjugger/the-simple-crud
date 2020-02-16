@@ -1,0 +1,9 @@
+runtime: java
+env: flex
+
+runtime_config:
+  jdk: openjdk8
+  
+handlers:
+  - url: /.*
+    script: main pom
